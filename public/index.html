@@ -444,10 +444,10 @@
     color: var(--text2);
     font-size: 12px;
     line-height: 1.5;
-    white-space: nowrap;
+    white-space: normal;
     overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 320px;
+    max-width: 420px;
+    word-break: break-word;
   }
 
   .td-actions {
@@ -463,6 +463,7 @@
     font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.5px;
+    margin-right: 8px;
   }
 
   .badge-intimacao { background: rgba(79,142,247,0.15); color: var(--accent2); }
@@ -1087,7 +1088,7 @@ function renderTable() {
     <tbody>`;
 
   slice.forEach((item, idx) => {
-    const processo = item.numeroProcesso || item.processo || '—';
+    const processo = item.numeroProcesso || item.processo || extrairProcesso(item.texto || item.resumo || item.conteudo || '') || '—';
     const oab = item._oab || '—';
     const data = fmtDataBR(item.dataDisponibilizacao || item.data || '');
     const tipo = item.tipoComunicacao || item.tipo || 'Comunicação';
@@ -1101,7 +1102,7 @@ function renderTable() {
       <td class="td-processo" title="${escHtml(processo)}">${escHtml(processo)}</td>
       <td class="td-data">${escHtml(data)}</td>
       <td class="td-tipo"><span class="badge ${badge}">${escHtml(tipo)}</span></td>
-      <td class="td-resumo" title="${escHtml(resumo)}">${escHtml(dest ? dest + ' · ' : '')}${escHtml(resumo.slice(0,120))}${resumo.length > 120 ? '…' : ''}</td>
+      <td class="td-resumo" title="${escHtml(dest ? dest + ' · ' : '')}${escHtml(resumo.slice(0,180))}">${escHtml(dest ? dest + ' · ' : '')}${escHtml(resumo.slice(0,180))}${resumo.length > 180 ? '…' : ''}</td>
       <td class="td-actions"><button class="icon-btn" onclick='openDetail(${JSON.stringify(JSON.stringify(item))})' title="Ver detalhe">↗</button></td>
     </tr>`;
   });
@@ -1289,6 +1290,11 @@ function stripHtml(html) {
   const d = document.createElement('div');
   d.innerHTML = html;
   return d.textContent || d.innerText || '';
+}
+
+function extrairProcesso(text) {
+  const match = String(text).match(/N[ºo]\s*([0-9\.\-/]+)/i);
+  return match ? match[0] : null;
 }
 
 function escHtml(s) {
