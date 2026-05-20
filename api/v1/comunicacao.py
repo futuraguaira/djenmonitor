@@ -43,13 +43,22 @@ class handler(BaseHTTPRequestHandler):
         req = urllib.request.Request(
             target,
             headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-                "Accept": "application/json",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "application/json, text/plain, */*",
+                "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
                 "Content-Type": "application/json",
-                "X-Forwarded-For": "200.1.1.1",  # IP fake para contornar bloqueio geográfico
+                "Referer": "https://www.cnj.jus.br/",
+                "Origin": "https://www.cnj.jus.br",
+                "Sec-Fetch-Dest": "empty",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Site": "cross-site",
+                "X-Forwarded-For": "187.1.1.1",
+                "CF-Connecting-IP": "187.1.1.1",
+                "CF-IPCountry": "BR",
                 "CloudFront-Is-Desktop-Viewer": "true",
                 "CloudFront-Is-Mobile-Viewer": "false",
-                "CloudFront-Is-Tablet-Viewer": "false",
+                "Cache-Control": "no-cache",
             }
         )
 
