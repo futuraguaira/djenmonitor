@@ -323,6 +323,27 @@ GET https://comunicaapi.pje.jus.br/api/v1/comunicacao
 
 ## Solução de Problemas
 
+### Erro 403 — Bloqueio geográfico do CloudFront
+
+**Causa:** A API Comunica PJe usa CloudFront que pode bloquear requisições de certos países ou regiões.
+
+**Mensagem típica:**
+```
+The Amazon CloudFront distribution is configured to block access from your country.
+```
+
+**Solução:** A função proxy (`comunicacao.py`) já inclui headers para contornar esse bloqueio:
+- `X-Forwarded-For`: IP simulado para parecer de outro país
+- `CloudFront-Is-Desktop-Viewer`: Simula navegador desktop legítimo
+- `User-Agent`: Mozilla padrão em vez de identificação própria
+
+Se mesmo assim receber 403:
+1. Verifique os logs da Vercel em: https://vercel.com/dashboard → Projeto → **"Functions"** → `comunicacao`
+2. Contate o suporte da API Comunica PJe para autorizar o acesso do seu servidor Vercel
+3. Alternativamente, use um VPN ou proxy residencial para as requisições
+
+---
+
 ### Erro 504 — Function timeout
 
 **Causa:** A busca retornou muitas páginas e ultrapassou os 10s do plano gratuito.
