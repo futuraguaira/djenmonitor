@@ -31,7 +31,7 @@ def comunicacao():
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
             "Accept": "application/json, text/plain, */*",
             "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
-            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Encoding": "identity",
             "Content-Type": "application/json",
             "Referer": "https://www.cnj.jus.br/",
             "Origin": "https://www.cnj.jus.br",
