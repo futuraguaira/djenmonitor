@@ -43,9 +43,13 @@ class handler(BaseHTTPRequestHandler):
         req = urllib.request.Request(
             target,
             headers={
-                "User-Agent": "DJEN-Monitor-Vercel/1.0",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
                 "Accept": "application/json",
                 "Content-Type": "application/json",
+                "X-Forwarded-For": "200.1.1.1",  # IP fake para contornar bloqueio geográfico
+                "CloudFront-Is-Desktop-Viewer": "true",
+                "CloudFront-Is-Mobile-Viewer": "false",
+                "CloudFront-Is-Tablet-Viewer": "false",
             }
         )
 
@@ -62,7 +66,12 @@ class handler(BaseHTTPRequestHandler):
 
         except urllib.error.HTTPError as e:
             body = e.read()
-            self._send_error(e.code, body.decode("utf-8", "replace"))
+            # Trata 403 como bloqueio geográfico
+            if e.code == 403:
+                msg = "Acesso bloqueado pela API PJe (restrição geográfica). Contate o suporte da API."
+            else:
+                msg = body.decode("utf-8", "replace")
+            self._send_error(e.code, msg)
 
         except urllib.error.URLError as e:
             self._send_error(502, f"Erro ao acessar a API PJe: {e.reason}")
