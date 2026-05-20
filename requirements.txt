@@ -1,0 +1,3 @@
+# Sem dependências externas.
+# O proxy usa apenas urllib e http.server da stdlib do Python 3.
+# A Vercel instala Python 3.9+ automaticamente.

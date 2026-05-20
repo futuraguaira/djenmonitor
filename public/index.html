@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DJEN Monitor — Publicações PJe</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161d;
+    --surface2: #1a1e28;
+    --border: #232838;
+    --border2: #2e3547;
+    --accent: #4f8ef7;
+    --accent2: #7eb8f7;
+    --gold: #e8c97a;
+    --green: #5fd4a0;
+    --red: #f07070;
+    --text: #e8eaf2;
+    --text2: #8a90a8;
+    --text3: #555e7a;
+    --radius: 10px;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Fraunces', serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ---- HEADER ---- */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), #2563eb);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .logo-text {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    color: var(--text);
+  }
+
+  .logo-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .header-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ---- LAYOUT ---- */
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 32px;
+  }
+
+  /* ---- SEARCH PANEL ---- */
+  .search-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .search-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), #7c3aed, var(--gold));
+  }
+
+  .search-title {
+    font-family: var(--serif);
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .search-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto auto;
+    gap: 12px;
+    align-items: end;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field-group label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .oab-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 12px;
+    align-items: end;
+  }
+
+  input, select {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.12);
+  }
+
+  input::placeholder { color: var(--text3); }
+
+  select option { background: var(--surface2); }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover { background: #3b7af5; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(79,142,247,0.3); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-danger {
+    background: transparent;
+    color: var(--red);
+    border: 1px solid rgba(240,112,112,0.3);
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+
+  .btn-danger:hover { background: rgba(240,112,112,0.1); }
+
+  /* ---- OAB CHIPS ---- */
+  .oab-list {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .oab-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 5px 12px 5px 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent2);
+    animation: chipIn 0.2s ease;
+  }
+
+  @keyframes chipIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .chip-remove {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: none;
+    background: var(--border2);
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 10px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, color 0.2s;
+    line-height: 1;
+  }
+
+  .chip-remove:hover { background: var(--red); color: #fff; }
+
+  /* ---- STATS ROW ---- */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card:hover { border-color: var(--border2); }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+
+  .stat-accent { color: var(--accent); }
+  .stat-gold   { color: var(--gold); }
+  .stat-green  { color: var(--green); }
+
+  /* ---- RESULTS TABLE ---- */
+  .results-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .results-title {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .results-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .filter-input {
+    width: 220px;
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 12px 18px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.015);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  thead th:hover { color: var(--text2); }
+
+  thead th.sort-asc::after  { content: ' ↑'; color: var(--accent); }
+  thead th.sort-desc::after { content: ' ↓'; color: var(--accent); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    animation: rowIn 0.3s ease both;
+  }
+
+  @keyframes rowIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  tbody tr:hover { background: rgba(79,142,247,0.04); }
+  tbody tr:last-child { border-bottom: none; }
+
+  td {
+    padding: 13px 18px;
+    font-size: 13px;
+    vertical-align: top;
+    max-width: 0;
+  }
+
+  .td-processo {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    white-space: nowrap;
+    width: 200px;
+  }
+
+  .td-oab {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    white-space: nowrap;
+    width: 110px;
+  }
+
+  .td-data {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    white-space: nowrap;
+    width: 100px;
+  }
+
+  .td-tipo {
+    width: 130px;
+  }
+
+  .td-resumo {
+    color: var(--text2);
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 320px;
+  }
+
+  .td-actions {
+    width: 50px;
+    text-align: right;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-intimacao { background: rgba(79,142,247,0.15); color: var(--accent2); }
+  .badge-citacao   { background: rgba(232,201,122,0.15); color: var(--gold); }
+  .badge-despacho  { background: rgba(95,212,160,0.15); color: var(--green); }
+  .badge-decisao   { background: rgba(240,112,112,0.15); color: var(--red); }
+
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text3);
+    font-size: 14px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: all 0.15s;
+  }
+
+  .icon-btn:hover { color: var(--accent); background: rgba(79,142,247,0.1); }
+
+  /* ---- EMPTY / LOADING / ERROR STATES ---- */
+  .state-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    gap: 16px;
+    color: var(--text3);
+  }
+
+  .state-icon {
+    font-size: 40px;
+    opacity: 0.4;
+  }
+
+  .state-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--text2);
+  }
+
+  .state-sub {
+    font-size: 13px;
+    max-width: 340px;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  /* ---- SPINNER ---- */
+  .spinner {
+    width: 28px; height: 28px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---- MODAL / DETAIL ---- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: modalIn 0.25s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 26px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-title {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .modal-close {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: none;
+    background: var(--surface2);
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .modal-close:hover { background: var(--red); color: #fff; }
+
+  .modal-body { padding: 22px 26px; }
+
+  .detail-field {
+    margin-bottom: 18px;
+  }
+
+  .detail-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .detail-value {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+
+  .detail-value.mono {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent2);
+  }
+
+  .detail-value.text-content {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 13px;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  /* ---- PAGINATION ---- */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+  }
+
+  .page-info {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .page-btns {
+    display: flex;
+    gap: 6px;
+  }
+
+  .page-btn {
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* ---- TOAST ---- */
+  .toasts {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 999;
+  }
+
+  .toast {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 260px;
+    animation: toastIn 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .toast.success { border-left: 3px solid var(--green); }
+  .toast.error   { border-left: 3px solid var(--red); }
+  .toast.info    { border-left: 3px solid var(--accent); }
+
+  /* ---- PROGRESS BAR ---- */
+  .progress-bar-wrap {
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    margin: 12px 0 4px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .progress-bar-wrap.visible { display: block; }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    border-radius: 1px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    margin-bottom: 14px;
+    display: none;
+  }
+
+  .progress-label.visible { display: block; }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 900px) {
+    .oab-row { grid-template-columns: 1fr 1fr; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .container { padding: 20px 16px; }
+  }
+
+  @media (max-width: 600px) {
+    .oab-row { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    header { padding: 14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">⚖️</div>
+    <div>
+      <div class="logo-text">DJEN Monitor</div>
+      <div class="logo-sub">API Comunica PJe</div>
+    </div>
+  </div>
+  <div class="header-status">
+    <div class="status-dot"></div>
+    <span id="headerDate">—</span>
+  </div>
+</header>
+
+<!-- Main -->
+<div class="container">
+
+  <!-- Search Panel -->
+  <div class="search-card">
+    <div class="search-title">Configurar Consulta</div>
+
+    <div class="oab-row">
+      <div class="field-group">
+        <label>Número OAB</label>
+        <input type="text" id="inputOab" placeholder="Ex: 307844" maxlength="12">
+      </div>
+      <div class="field-group">
+        <label>UF</label>
+        <select id="inputUf">
+          <option value="">UF</option>
+          <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+          <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+          <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+          <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+          <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+          <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+          <option selected>SP</option><option>SE</option><option>TO</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>Data Início</label>
+        <input type="date" id="inputDataInicio">
+      </div>
+      <div class="field-group">
+        <label>Data Fim</label>
+        <input type="date" id="inputDataFim">
+      </div>
+      <button class="btn btn-secondary" onclick="addOab()">+ Adicionar OAB</button>
+    </div>
+
+    <!-- OAB Chips -->
+    <div class="oab-list" id="oabList">
+      <span style="font-family:var(--mono);font-size:11px;color:var(--text3)">Nenhuma OAB adicionada</span>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-bar-wrap" id="progressWrap">
+      <div class="progress-bar" id="progressBar" style="width:0%"></div>
+    </div>
+    <div class="progress-label" id="progressLabel"></div>
+
+    <!-- Actions -->
+    <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="runSearch()" id="btnSearch">
+        <span>🔍</span> Buscar Publicações
+      </button>
+      <button class="btn btn-secondary" onclick="setBuscarHoje()">📅 Hoje</button>
+      <button class="btn btn-secondary" onclick="setBuscarOntem()">📅 Ontem</button>
+      <button class="btn btn-secondary" onclick="exportarCSV()" id="btnExport" style="display:none">⬇ Exportar CSV</button>
+      <button class="btn btn-danger" onclick="limparTudo()">✕ Limpar</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row" id="statsRow" style="display:none">
+    <div class="stat-card">
+      <div class="stat-label">Total de Publicações</div>
+      <div class="stat-value stat-accent" id="statTotal">0</div>
+      <div class="stat-sub">na consulta atual</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">OABs Consultadas</div>
+      <div class="stat-value stat-gold" id="statOabs">0</div>
+      <div class="stat-sub">advogados monitorados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Processos Únicos</div>
+      <div class="stat-value stat-green" id="statProcessos">0</div>
+      <div class="stat-sub">números distintos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Período</div>
+      <div class="stat-value" id="statPeriodo" style="font-size:16px;padding-top:8px;color:var(--text2)">—</div>
+      <div class="stat-sub">data de disponibilização</div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="results-card">
+    <div class="results-header">
+      <div class="results-title">Publicações</div>
+      <div class="results-controls">
+        <input type="text" class="filter-input" id="filterInput" placeholder="🔎  Filtrar resultados..." oninput="filtrarTabela()">
+      </div>
+    </div>
+
+    <div id="tableArea">
+      <div class="state-box">
+        <div class="state-icon">📋</div>
+        <div class="state-title">Nenhuma consulta realizada</div>
+        <div class="state-sub">Adicione uma ou mais OABs, configure as datas e clique em "Buscar Publicações" para iniciar.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal Detalhe -->
+<div class="modal-overlay" id="modalOverlay" onclick="fecharModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Detalhe da Publicação</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div class="toasts" id="toasts"></div>
+
+<script>
+// ---- STATE ----
+let oabList = [];
+let allResults = [];
+let filteredResults = [];
+let sortField = null;
+let sortDir = 'asc';
+let currentPage = 1;
+const PAGE_SIZE = 20;
+const BASE_URL = '';  // vazio = usa o mesmo servidor que serve o HTML
+// fetchWithProxy: chama /api/ no servidor local, que faz o proxy real para a API PJe
+async function fetchWithProxy(url) {
+  // Converte URL absoluta da API PJe em rota local /api/...
+  const localUrl = url.replace('https://comunicaapi.pje.jus.br', '');
+  const res = await fetch(localUrl, { signal: AbortSignal.timeout(30000) });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
+  return res;
+}
+
+// ---- INIT ----
+document.addEventListener('DOMContentLoaded', () => {
+  const now = new Date();
+  document.getElementById('headerDate').textContent = now.toLocaleDateString('pt-BR', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+  const yesterday = new Date(now - 86400000);
+  document.getElementById('inputDataInicio').value = fmtDate(yesterday);
+  document.getElementById('inputDataFim').value = fmtDate(yesterday);
+  // Enter key on OAB input
+  document.getElementById('inputOab').addEventListener('keydown', e => { if (e.key === 'Enter') addOab(); });
+});
+
+function fmtDate(d) {
+  return d.toISOString().slice(0, 10);
+}
+
+// ---- OAB MANAGEMENT ----
+function addOab() {
+  const num = document.getElementById('inputOab').value.trim();
+  const uf  = document.getElementById('inputUf').value.trim();
+  if (!num || !uf) { toast('Preencha o número da OAB e a UF.', 'error'); return; }
+  if (oabList.find(x => x.num === num && x.uf === uf)) { toast('OAB já adicionada.', 'info'); return; }
+  oabList.push({ num, uf });
+  document.getElementById('inputOab').value = '';
+  renderOabChips();
+  toast(`OAB ${num}/${uf} adicionada.`, 'success');
+}
+
+function removeOab(i) {
+  oabList.splice(i, 1);
+  renderOabChips();
+}
+
+function renderOabChips() {
+  const el = document.getElementById('oabList');
+  if (!oabList.length) {
+    el.innerHTML = '<span style="font-family:var(--mono);font-size:11px;color:var(--text3)">Nenhuma OAB adicionada</span>';
+    return;
+  }
+  el.innerHTML = oabList.map((o, i) =>
+    `<span class="oab-chip">
+      ⚖️ ${o.num}/${o.uf}
+      <button class="chip-remove" onclick="removeOab(${i})" title="Remover">✕</button>
+    </span>`
+  ).join('');
+}
+
+function setBuscarHoje() {
+  const t = fmtDate(new Date());
+  document.getElementById('inputDataInicio').value = t;
+  document.getElementById('inputDataFim').value = t;
+}
+
+function setBuscarOntem() {
+  const t = fmtDate(new Date(Date.now() - 86400000));
+  document.getElementById('inputDataInicio').value = t;
+  document.getElementById('inputDataFim').value = t;
+}
+
+// ---- FETCH WITH PAGINATION ----
+async function fetchAllPages(oab, uf, dataInicio, dataFim) {
+  let items = [];
+  let page = 0;
+  const size = 100;
+
+  while (true) {
+    const params = new URLSearchParams({
+      numeroOab: oab,
+      ufOab: uf,
+      dataDisponibilizacaoInicio: dataInicio,
+      dataDisponibilizacaoFim: dataFim,
+      page: String(page),
+      size: String(size)
+    });
+
+    const apiUrl = `${BASE_URL}/api/v1/comunicacao?${params}`;
+    const res = await fetchWithProxy(apiUrl);
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    const data = await res.json();
+
+    const pageItems = data.items || data.content || data || [];
+    if (!Array.isArray(pageItems) || pageItems.length === 0) break;
+
+    items = items.concat(pageItems);
+    if (pageItems.length < size) break;
+    page++;
+  }
+
+  return items;
+}
+
+// ---- MAIN SEARCH ----
+async function runSearch() {
+  if (!oabList.length) { toast('Adicione ao menos uma OAB antes de buscar.', 'error'); return; }
+  const dataInicio = document.getElementById('inputDataInicio').value;
+  const dataFim    = document.getElementById('inputDataFim').value;
+  if (!dataInicio || !dataFim) { toast('Defina o intervalo de datas.', 'error'); return; }
+  if (dataInicio > dataFim) { toast('Data início não pode ser maior que a data fim.', 'error'); return; }
+
+  const btn = document.getElementById('btnSearch');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px;margin:0"></div> Buscando...';
+
+  showProgress(0, `Iniciando busca para ${oabList.length} OAB(s)...`);
+  setTableState('loading');
+  allResults = [];
+
+  try {
+    for (let i = 0; i < oabList.length; i++) {
+      const o = oabList[i];
+      const pct = Math.round(((i) / oabList.length) * 100);
+      showProgress(pct, `Buscando OAB ${o.num}/${o.uf} (${i+1}/${oabList.length})...`);
+
+      const items = await fetchAllPages(o.num, o.uf, dataInicio, dataFim);
+      // Tag cada item com a OAB que originou
+      items.forEach(item => { item._oab = `${o.num}/${o.uf}`; });
+      allResults = allResults.concat(items);
+    }
+
+    // Deduplicate by 'id'
+    const unique = {};
+    allResults.forEach(it => { if (it.id) unique[it.id] = it; else unique[Math.random()] = it; });
+    allResults = Object.values(unique);
+
+    showProgress(100, `Concluído — ${allResults.length} publicação(ões) encontrada(s).`);
+
+    filteredResults = [...allResults];
+    currentPage = 1;
+    renderStats(dataInicio, dataFim);
+    renderTable();
+    document.getElementById('statsRow').style.display = 'grid';
+    document.getElementById('btnExport').style.display = allResults.length ? 'flex' : 'none';
+    toast(`${allResults.length} publicação(ões) encontrada(s).`, allResults.length ? 'success' : 'info');
+
+  } catch (err) {
+    setTableState('error', err.message);
+    toast(`Erro: ${err.message}`, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>🔍</span> Buscar Publicações';
+    setTimeout(hideProgress, 3000);
+  }
+}
+
+// ---- PROGRESS ----
+function showProgress(pct, label) {
+  document.getElementById('progressWrap').classList.add('visible');
+  document.getElementById('progressLabel').classList.add('visible');
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = label;
+}
+
+function hideProgress() {
+  document.getElementById('progressWrap').classList.remove('visible');
+  document.getElementById('progressLabel').classList.remove('visible');
+}
+
+// ---- STATS ----
+function renderStats(di, df) {
+  document.getElementById('statTotal').textContent = allResults.length;
+  document.getElementById('statOabs').textContent = oabList.length;
+  const uniqProc = new Set(allResults.map(r => r.numeroProcesso || r.processo || '').filter(Boolean));
+  document.getElementById('statProcessos').textContent = uniqProc.size;
+  const d1 = di.split('-').reverse().join('/');
+  const d2 = df.split('-').reverse().join('/');
+  document.getElementById('statPeriodo').textContent = d1 === d2 ? d1 : `${d1} – ${d2}`;
+}
+
+// ---- TABLE RENDER ----
+function renderTable() {
+  const area = document.getElementById('tableArea');
+
+  if (!filteredResults.length) {
+    setTableState('empty');
+    return;
+  }
+
+  const total = filteredResults.length;
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const slice = filteredResults.slice(start, start + PAGE_SIZE);
+
+  let html = `<div style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr>
+        <th onclick="sortBy('_oab')">OAB</th>
+        <th onclick="sortBy('numeroProcesso')">Nº Processo</th>
+        <th onclick="sortBy('dataDisponibilizacao')">Disponibilização</th>
+        <th onclick="sortBy('tipoComunicacao')">Tipo</th>
+        <th>Resumo / Destinatário</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  slice.forEach((item, idx) => {
+    const processo = item.numeroProcesso || item.processo || '—';
+    const oab = item._oab || '—';
+    const data = fmtDataBR(item.dataDisponibilizacao || item.data || '');
+    const tipo = item.tipoComunicacao || item.tipo || 'Comunicação';
+    const dest = item.nomeDestinatario || item.destinatario || '';
+    const resumo = stripHtml(item.texto || item.resumo || item.conteudo || '');
+    const badge = badgeClass(tipo);
+    const delay = idx * 30;
+
+    html += `<tr style="animation-delay:${delay}ms">
+      <td class="td-oab">${escHtml(oab)}</td>
+      <td class="td-processo" title="${escHtml(processo)}">${escHtml(processo)}</td>
+      <td class="td-data">${escHtml(data)}</td>
+      <td class="td-tipo"><span class="badge ${badge}">${escHtml(tipo)}</span></td>
+      <td class="td-resumo" title="${escHtml(resumo)}">${escHtml(dest ? dest + ' · ' : '')}${escHtml(resumo.slice(0,120))}${resumo.length > 120 ? '…' : ''}</td>
+      <td class="td-actions"><button class="icon-btn" onclick='openDetail(${JSON.stringify(JSON.stringify(item))})' title="Ver detalhe">↗</button></td>
+    </tr>`;
+  });
+
+  html += `</tbody></table></div>`;
+
+  // Pagination
+  html += `<div class="pagination">
+    <div class="page-info">Exibindo ${start+1}–${Math.min(start+PAGE_SIZE, total)} de ${total}</div>
+    <div class="page-btns">
+      <button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+
+  const pages = pageBtns(currentPage, totalPages);
+  pages.forEach(p => {
+    if (p === '…') html += `<button class="page-btn" disabled>…</button>`;
+    else html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  });
+
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>
+    </div>
+  </div>`;
+
+  area.innerHTML = html;
+  applySortHighlight();
+}
+
+function pageBtns(cur, total) {
+  if (total <= 7) return Array.from({length: total}, (_, i) => i + 1);
+  const btns = [1];
+  if (cur > 3) btns.push('…');
+  for (let p = Math.max(2, cur-1); p <= Math.min(total-1, cur+1); p++) btns.push(p);
+  if (cur < total - 2) btns.push('…');
+  btns.push(total);
+  return btns;
+}
+
+function goPage(p) {
+  const totalPages = Math.ceil(filteredResults.length / PAGE_SIZE);
+  if (p < 1 || p > totalPages) return;
+  currentPage = p;
+  renderTable();
+  document.querySelector('.results-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ---- STATE BOXES ----
+function setTableState(state, msg) {
+  const area = document.getElementById('tableArea');
+  if (state === 'loading') {
+    area.innerHTML = `<div class="state-box"><div class="spinner"></div><div class="state-title">Consultando a API…</div><div class="state-sub">Buscando publicações para as OABs configuradas.</div></div>`;
+  } else if (state === 'empty') {
+    area.innerHTML = `<div class="state-box"><div class="state-icon">🔍</div><div class="state-title">Nenhuma publicação encontrada</div><div class="state-sub">Não há comunicações para as OABs e período selecionados.</div></div>`;
+  } else if (state === 'error') {
+    area.innerHTML = `<div class="state-box"><div class="state-icon">⚠️</div><div class="state-title">Erro na consulta</div><div class="state-sub">${escHtml(msg||'')}<br><br>Verifique a conectividade e tente novamente. Se o erro persistir, a API pode estar temporariamente indisponível.</div></div>`;
+  }
+}
+
+// ---- FILTER ----
+function filtrarTabela() {
+  const q = document.getElementById('filterInput').value.toLowerCase();
+  if (!q) {
+    filteredResults = [...allResults];
+  } else {
+    filteredResults = allResults.filter(item => {
+      const str = JSON.stringify(item).toLowerCase();
+      return str.includes(q);
+    });
+  }
+  currentPage = 1;
+  if (filteredResults.length) renderTable();
+  else setTableState('empty');
+}
+
+// ---- SORT ----
+function sortBy(field) {
+  if (sortField === field) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  else { sortField = field; sortDir = 'asc'; }
+  filteredResults.sort((a, b) => {
+    const va = String(a[field] || '');
+    const vb = String(b[field] || '');
+    return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+  });
+  renderTable();
+}
+
+function applySortHighlight() {
+  document.querySelectorAll('thead th').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    const f = th.getAttribute('onclick')?.match(/sortBy\('(.+?)'\)/)?.[1];
+    if (f && f === sortField) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+  });
+}
+
+// ---- DETAIL MODAL ----
+function openDetail(jsonStr) {
+  const item = JSON.parse(jsonStr);
+  const body = document.getElementById('modalBody');
+
+  const fields = [
+    ['Número do Processo', item.numeroProcesso || item.processo, 'mono'],
+    ['OAB', item._oab],
+    ['Tipo de Comunicação', item.tipoComunicacao || item.tipo],
+    ['Data de Disponibilização', fmtDataBR(item.dataDisponibilizacao || item.data)],
+    ['Destinatário', item.nomeDestinatario || item.destinatario],
+    ['Remetente / Órgão', item.nomeOrgao || item.orgao || item.remetente],
+    ['Número da Intimação', item.numeroIntimacao || item.id],
+    ['Conteúdo', stripHtml(item.texto || item.resumo || item.conteudo || ''), 'text-content'],
+  ].filter(([, v]) => v);
+
+  body.innerHTML = fields.map(([label, value, cls='']) =>
+    `<div class="detail-field">
+      <div class="detail-label">${escHtml(label)}</div>
+      <div class="detail-value ${cls}">${cls === 'text-content' ? escHtml(String(value)) : escHtml(String(value))}</div>
+    </div>`
+  ).join('');
+
+  if (item.numeroProcesso) {
+    body.innerHTML += `<div class="detail-field">
+      <div class="detail-label">Link PJe</div>
+      <div class="detail-value"><a href="https://pje.jus.br/pje/ConsultaPublica/listView.seam" target="_blank" style="color:var(--accent)">Abrir no PJe ↗</a></div>
+    </div>`;
+  }
+
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function fecharModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ---- EXPORT CSV ----
+function exportarCSV() {
+  if (!allResults.length) return;
+  const cols = ['_oab', 'numeroProcesso', 'dataDisponibilizacao', 'tipoComunicacao', 'nomeDestinatario', 'nomeOrgao'];
+  const header = ['OAB', 'Processo', 'Disponibilização', 'Tipo', 'Destinatário', 'Órgão'];
+  const rows = [header.join(';')];
+  allResults.forEach(item => {
+    rows.push(cols.map(c => `"${String(item[c]||'').replace(/"/g,'""')}"`).join(';'));
+  });
+  const blob = new Blob(['\uFEFF' + rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `publicacoes_${fmtDate(new Date())}.csv`;
+  a.click();
+  toast('CSV exportado com sucesso.', 'success');
+}
+
+// ---- LIMPAR ----
+function limparTudo() {
+  oabList = [];
+  allResults = [];
+  filteredResults = [];
+  renderOabChips();
+  setTableState('initial');
+  document.getElementById('statsRow').style.display = 'none';
+  document.getElementById('btnExport').style.display = 'none';
+  document.getElementById('filterInput').value = '';
+  document.getElementById('tableArea').innerHTML = `<div class="state-box"><div class="state-icon">📋</div><div class="state-title">Nenhuma consulta realizada</div><div class="state-sub">Adicione uma ou mais OABs, configure as datas e clique em "Buscar Publicações" para iniciar.</div></div>`;
+}
+
+// ---- TOAST ----
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+  el.innerHTML = `<span>${icons[type]||''}</span><span>${escHtml(msg)}</span>`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.remove(), 4500);
+}
+
+// ---- HELPERS ----
+function fmtDataBR(s) {
+  if (!s) return '—';
+  if (s.includes('T')) s = s.split('T')[0];
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s.split('-').reverse().join('/');
+  return s;
+}
+
+function stripHtml(html) {
+  const d = document.createElement('div');
+  d.innerHTML = html;
+  return d.textContent || d.innerText || '';
+}
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+function badgeClass(tipo = '') {
+  const t = tipo.toLowerCase();
+  if (t.includes('intima')) return 'badge-intimacao';
+  if (t.includes('cita'))   return 'badge-citacao';
+  if (t.includes('desp'))   return 'badge-despacho';
+  if (t.includes('decis'))  return 'badge-decisao';
+  return 'badge-intimacao';
+}
+</script>
+</body>
+</html>

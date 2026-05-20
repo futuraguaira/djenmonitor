@@ -1,0 +1,35 @@
+# Vercel
+.vercel/
+.vercel
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+
+# Ambiente virtual
+venv/
+.venv/
+env/
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
+
+# Dados locais (não subir publicações ao repositório)
+resultados/
+*.json
+!package.json
+
+# Editor
+.vscode/settings.json
+.idea/
+*.swp
