@@ -1201,7 +1201,7 @@ function openDetail(jsonStr) {
   const body = document.getElementById('modalBody');
 
   const fields = [
-    ['Número do Processo', item.numeroProcesso || item.processo, 'mono'],
+    ['Número do Processo', item.numeroProcesso || item.processo || extrairProcesso(item.texto || item.resumo || item.conteudo || ''), 'mono'],
     ['OAB', item._oab],
     ['Tipo de Comunicação', item.tipoComunicacao || item.tipo],
     ['Data de Disponibilização', fmtDataBR(item.dataDisponibilizacao || item.data)],
